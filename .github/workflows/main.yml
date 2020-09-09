@@ -12,13 +12,13 @@ jobs:
 
 
     steps:
-     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-￼    - uses: actions/checkout@v2
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+    - uses: actions/checkout@v2
 
-     - name: Dump GitHub context
-       env:
-         GITHUB_CONTEXT: ${{ toJson(github) }}
-       run: |
-         echo "$GITHUB_CONTEXT"
-         echo ${{ github.event.pull_request.title }}
-￼
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
+        echo ${{ github.event.pull_request.title }}
+
