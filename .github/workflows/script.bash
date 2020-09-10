@@ -1,8 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
 
-echo "hello from bash script"
-
 env
 
 sudo apt-get install jq curl
@@ -38,6 +36,7 @@ check_state() {
 	if [ "$merged" != false ]
 	then
 		add_comment "PR is already merged"
+		remove_label
 		exit 1
 	fi
 
@@ -45,6 +44,7 @@ check_state() {
 	if [ "$mergeable" != true ]
 	then
 		add_comment "PR does not seem to be mergeable"
+		remove_label
 		exit 1
 	fi
 }
