@@ -34,15 +34,19 @@ close_issue() {
 }
 
 check_state() {
+	local merged="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.merged)"
+	if [ "$merged" != false ]
+	then
+		add_comment "PR is already merged"
+		exit 1
+	fi
+
 	local mergeable="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.mergeable)"
 	if [ "$mergeable" != true ]
 	then
 		add_comment "PR does not seem to be mergeable"
 		exit 1
 	fi
-
-	add_comment "PR seems to be mergeable"
-	exit 1 # FIXME: remove
 }
 
 check_state
