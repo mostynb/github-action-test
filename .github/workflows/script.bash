@@ -25,5 +25,14 @@ add_comment() {
 		--data "$data"
 }
 
+close_issue() {
+	local url=$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request._links.issue.href)
+
+	curl -X PATCH -H "Accept: application/vnd.github.v3+json" \
+		--header "authorization: Bearer $GITHUB_TOKEN" $url \
+		-d '{"state": "closed"}'
+}
+
 add_comment "testing leaving a comment"
 remove_label
+close_issue
