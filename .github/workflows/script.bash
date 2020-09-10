@@ -56,6 +56,7 @@ merge() {
 	git remote -v
 	git branch
 	git status
+	git log -10
 }
 
 check_prereqs
