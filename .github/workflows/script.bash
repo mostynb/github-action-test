@@ -33,6 +33,19 @@ close_issue() {
 		-d '{"state": "closed"}'
 }
 
+check_state() {
+	local mergeable="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.mergeable)"
+	if [ "$mergeable" != true ]
+		add_comment "PR does not seem to be mergeable"
+		exit 1
+	fi
+
+	add_comment "PR seems to be mergeable"
+	exit 1 # FIXME: remove
+}
+
+check_state
+
 add_comment "testing leaving a comment"
 remove_label
 close_issue
