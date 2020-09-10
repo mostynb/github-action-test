@@ -12,13 +12,10 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    - name: Dump GitHub context
+    - name: Attempt merge
       if: github.event.label.name == 'merge-me'
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        pwd
-        ls -lR .
-        .github/workflows/script.bash
+      run: .github/workflows/script.bash
 
