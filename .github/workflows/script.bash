@@ -31,7 +31,7 @@ close_issue() {
 		-d '{"state": "closed"}'
 }
 
-check_state() {
+check_prereqs() {
 	local merged="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.merged)"
 	if [ "$merged" != false ]
 	then
@@ -47,9 +47,19 @@ check_state() {
 		remove_label
 		exit 1
 	fi
+
+	# TODO: check base_ref is master
 }
 
-check_state
+merge() {
+	# TODO: actually attempt the merge
+	git remote -v
+	git branch
+	git status
+}
+
+check_prereqs
+merge
 
 add_comment "testing leaving a comment"
 remove_label
