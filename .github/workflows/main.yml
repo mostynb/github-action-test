@@ -16,5 +16,8 @@ jobs:
       if: github.event.label.name == 'merge-me'
       env:
         GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: bash .github/workflows/script.bash
+      run: |
+        pwd
+        ls -lR .
+        .github/workflows/script.bash
 
