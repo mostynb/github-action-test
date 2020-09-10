@@ -5,7 +5,7 @@ echo "hello from bash script"
 
 env
 
-sudo apt-get install jq
+sudo apt-get install jq curl
 
 remove_label() {
 	local url=$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request._links.issue.href)/labels/merge-me
