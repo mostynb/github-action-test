@@ -76,6 +76,7 @@ run_hooks() {
 
 	local remote=$(echo $GITHUB_CONTEXT | jq --raw-output .repositoryUrl)
 	git remote add target "$remote" # In case this was checked out via https.
+	git fetch target refs/heads/master
 
 	if ! git diff --cached --exit-code --quiet
 	then
