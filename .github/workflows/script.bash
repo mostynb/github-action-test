@@ -77,10 +77,15 @@ run_hooks() {
 	local remote=$(echo $GITHUB_CONTEXT | jq --raw-output .repositoryUrl)
 	git remote add target "$remote" # In case this was checked out via https.
 
-	if git commit -m "run hooks"
+	if ! git diff --cached --exit-code --quiet
 	then
-		git push target master || bail_out "unable to push to master branch"
+		git commit -m "run hooks"
 	fi
+
+	local ref=$(git rev-parse HEAD)
+	git checkout master || bail_out "unable to checkout master branch"
+	git merge --ff-only "$ref" || bail_out "unable to add commits"
+	git push target master || bail_out "unable to push to master branch"
 
 	# TODO: Add a link to the pushed commit?
 	add_comment "Pushed to master"
