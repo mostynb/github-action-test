@@ -33,7 +33,7 @@ close_issue() {
 }
 
 bail_out() {
-	local msg="something went wrong trying to merge"
+	local msg="Something went wrong trying to merge"
 	if [ -n "$1" ]
 	then
 		add_comment "$msg: $1"
