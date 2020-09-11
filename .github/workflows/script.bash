@@ -83,7 +83,7 @@ run_hooks() {
 
 	if ! git diff --cached --exit-code --quiet
 	then
-		git commit -m "run hooks" || bail_out "unable to commit hook updates"
+		git commit --amend --no-edit || bail_out "unable to amend tip with hook updates"
 	fi
 
 	git push origin master || bail_out "unable to push to master branch"
