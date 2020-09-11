@@ -14,12 +14,6 @@ jobs:
       with:
         fetch-depth: 0 # Fetch all history
 
-    - name: Check git situation
-      if: github.event.label.name == 'merge-me'
-      run: |
-        pwd
-        git remote -v
-
     - name: Attempt merge
       if: github.event.label.name == 'merge-me'
       env:
