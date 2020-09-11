@@ -65,30 +65,27 @@ check_prereqs() {
 }
 
 run_hooks() {
-	# Run some pretend "hooks" that might commit something.
-
-	date >> commit_log.txt
-	echo "hooks run :)" >> commit_log.txt
-
 	git config user.name "GitHub Actions Bot"
 	git config user.email "<>"
-	git add commit_log.txt
 
 	local remote=$(echo $GITHUB_CONTEXT | jq --raw-output .repositoryUrl)
 	git remote add target "$remote" # In case this was checked out via https.
 	git fetch target refs/heads/master
+	git checkout master || bail_out "unable to checkout master branch"
+
+	local pr_ref=$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.head.sha)
+	git merge "$pr_ref" || bail_out "unable to merge $pr_ref into the master branch"
+
+	# Run some pretend "hooks" that might commit something.
+	date >> commit_log.txt
+	echo "hooks run :)" >> commit_log.txt
+	git add commit_log.txt
 
 	if ! git diff --cached --exit-code --quiet
 	then
-		git commit -m "run hooks"
+		git commit -m "run hooks" || bail_out "unable to commit hook updates"
 	fi
 
-	local ref=$(git rev-parse HEAD)
-	git branch -r
-git log -100
-	git checkout master || bail_out "unable to checkout master branch"
-git log -100
-	git merge --ff-only "$ref" || bail_out "unable to add commits"
 	git push target master || bail_out "unable to push to master branch"
 
 	# TODO: Add a link to the pushed commit?
