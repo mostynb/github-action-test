@@ -31,29 +31,35 @@ close_issue() {
 		-d '{"state": "closed"}'
 }
 
+bail_out() {
+	local msg="something went wrong trying to merge"
+	if [ -n "$1" ]
+	then
+		add_comment "$msg: $1"
+	else
+		add_comment "$msg"
+	fi
+	remove_label
+	exit 1
+}
+
 check_prereqs() {
 	local merged="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.merged)"
 	if [ "$merged" != false ]
 	then
-		add_comment "PR is already merged"
-		remove_label
-		exit 1
+		bail_out "PR is already merged"
 	fi
 
 	local mergeable="$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.mergeable)"
 	if [ "$mergeable" != true ]
 	then
-		add_comment "PR does not seem to be mergeable"
-		remove_label
-		exit 1
+		bail_out "PR does not seem to be mergeable"
 	fi
 
 	local base_ref="$(echo $GITHUB_CONTEXT | jq --raw-output .base_ref)"
 	if [ "$base_ref" != master ]
 	then
-		add_comment "PR is not based on master"
-		remove_label
-		exit 1
+		bail_out "PR is not based on master"
 	fi
 }
 
@@ -69,7 +75,7 @@ run_hooks() {
 
 	if git commit -m "run hooks"
 	then
-		git push origin master
+		git push origin master || bail_out "unable to push to master branch"
 	fi
 
 	# TODO: Add a link to the pushed commit?
