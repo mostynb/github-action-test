@@ -83,6 +83,7 @@ run_hooks() {
 	fi
 
 	local ref=$(git rev-parse HEAD)
+	git branch -r
 	git checkout master || bail_out "unable to checkout master branch"
 	git merge --ff-only "$ref" || bail_out "unable to add commits"
 	git push target master || bail_out "unable to push to master branch"
