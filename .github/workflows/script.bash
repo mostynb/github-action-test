@@ -71,8 +71,6 @@ run_hooks() {
 	local remote=$(echo $GITHUB_CONTEXT | jq --raw-output .repositoryUrl)
 	git remote -v
 	git fetch --all
-	#git remote add target "$remote" # In case this was checked out via https.
-	#git fetch target
 	git checkout master || bail_out "unable to checkout master branch"
 
 	local pr_ref=$(echo $GITHUB_CONTEXT | jq --raw-output .event.pull_request.head.sha)
