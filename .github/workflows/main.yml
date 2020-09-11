@@ -12,6 +12,12 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
+    - name: Check git situation
+      if: github.event.label.name == 'merge-me'
+      run: |
+        pwd
+        git remote -v
+
     - name: Attempt merge
       if: github.event.label.name == 'merge-me'
       env:
