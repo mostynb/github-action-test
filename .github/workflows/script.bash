@@ -73,9 +73,12 @@ run_hooks() {
 	git config user.email "<>"
 	git add commit_log.txt
 
+	local remote=$(echo $GITHUB_CONTEXT | jq --raw-output .repositoryUrl)
+	git remote add target "$remote" # In case this was checked out via https.
+
 	if git commit -m "run hooks"
 	then
-		git push origin master || bail_out "unable to push to master branch"
+		git push target master || bail_out "unable to push to master branch"
 	fi
 
 	# TODO: Add a link to the pushed commit?
