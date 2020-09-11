@@ -48,7 +48,13 @@ check_prereqs() {
 		exit 1
 	fi
 
-	# TODO: check base_ref is master
+	local base_ref="$(echo $GITHUB_CONTEXT | jq --raw-output .base_ref)"
+	if [ "$base_ref" != master ]
+	then
+		add_comment "PR is not based on master"
+		remove_label
+		exit 1
+	fi
 }
 
 merge() {
