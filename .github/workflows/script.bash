@@ -57,17 +57,27 @@ check_prereqs() {
 	fi
 }
 
-merge() {
-	# TODO: actually attempt the merge
-	git remote -v
-	git branch
-	git status
-	git log -10
+run_hooks() {
+	# Run some pretend "hooks" that might commit something.
+
+	date >> commit_log.txt
+	echo "hooks run :)" >> commit_log.txt
+
+	git config user.name "GitHub Actions Bot"
+	git config user.email "<>"
+	git add commit_log.txt
+
+	if git commit -m "run hooks"
+	then
+		git push origin master
+	fi
+
+	# TODO: Add a link to the pushed commit?
+	add_comment "Pushed to master"
+	remove_label
+	close_issue
 }
 
 check_prereqs
-merge
+run_hooks
 
-add_comment "testing leaving a comment"
-remove_label
-close_issue
