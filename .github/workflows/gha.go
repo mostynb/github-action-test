@@ -65,7 +65,11 @@ type mergeMe struct {
 
 func getOpenPRs() []issue {
 	url := "https://api.github.com/repos/mostynb/github-action-test/pulls"
-	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "GET", url, nil)
+	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		panic(err)
 	}
@@ -254,7 +258,11 @@ func (m *mergeMe) addComment(comment string) error {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "POST", url, bytes.NewReader(data))
+	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
@@ -277,7 +285,11 @@ func (m *mergeMe) removeLabel() error {
 	url := m.prUrl + "/labels/merge-me"
 	log.Println("DELETE:", url)
 
-	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "DELETE", url, nil)
+	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
 	req.Header.Add("Authorization", "Bearer "+githubToken)
 	if err != nil {
 		return err
@@ -308,7 +320,11 @@ func (m *mergeMe) closePR() error {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "GET", m.prUrl, bytes.NewReader(data))
+	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
+	if err != nil {
+		return err
+	}
+	req, err := http.NewRequestWithContext(ctx, "GET", m.prUrl, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
