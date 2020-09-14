@@ -65,10 +65,7 @@ type mergeMe struct {
 
 func getOpenPRs() []issue {
 	url := "https://api.github.com/repos/mostynb/github-action-test/pulls"
-	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
-	if err != nil {
-		return err
-	}
+	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		panic(err)
@@ -81,10 +78,10 @@ func getOpenPRs() []issue {
 		panic(err)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
-		return fmt.Errorf("Request failed: %d", resp.StatusCode)
+		panic(fmt.Sprintf("Request failed: %d", resp.StatusCode))
 	}
 
-	data, err = ioutil.ReadAll(resp.Body)
+	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		panic(err)
 	}
@@ -258,10 +255,7 @@ func (m *mergeMe) addComment(comment string) error {
 		return err
 	}
 
-	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
-	if err != nil {
-		return err
-	}
+	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(data))
 	if err != nil {
 		return err
@@ -285,10 +279,7 @@ func (m *mergeMe) removeLabel() error {
 	url := m.prUrl + "/labels/merge-me"
 	log.Println("DELETE:", url)
 
-	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
-	if err != nil {
-		return err
-	}
+	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
 	req.Header.Add("Authorization", "Bearer "+githubToken)
 	if err != nil {
@@ -320,10 +311,7 @@ func (m *mergeMe) closePR() error {
 		return err
 	}
 
-	ctx, err := context.WithTimeout(context.Background(), requestTimeout)
-	if err != nil {
-		return err
-	}
+	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "GET", m.prUrl, bytes.NewReader(data))
 	if err != nil {
 		return err
