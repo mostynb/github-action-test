@@ -20,4 +20,4 @@ jobs:
     - name: Attempt merges
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: go run .github/workflows/gha.go
+      run: go run gha.go
