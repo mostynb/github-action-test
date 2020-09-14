@@ -308,7 +308,7 @@ func (m *mergeMe) closePR() error {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "GET", m.prURL, bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(context.WithTimeout(requestTimeout), "GET", m.prUrl, bytes.NewReader(data))
 	if err != nil {
 		return err
 	}
