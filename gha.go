@@ -53,10 +53,20 @@ type head struct {
 	Sha  string `json:"sha"`
 }
 
+type comments struct {
+	Href string `json:"href"`
+}
+
+type links struct {
+	Comments comments `json:"comments"`
+}
+
 type issue struct {
-	Url    string  `json:"url"`
-	Labels []label `json:"labels"`
-	Head   head    `json:"head"`
+	Url      string  `json:"url"`
+	IssueUrl string  `json:"issue_url"`
+	Labels   []label `json:"labels"`
+	Head     head    `json:"head"`
+	Links    links   `json:"_links"`
 }
 
 type issueList struct {
@@ -64,9 +74,11 @@ type issueList struct {
 }
 
 type mergeMe struct {
-	prUrl    string
-	cloneUrl string
-	sha      string
+	prUrl      string
+	cloneUrl   string
+	commentUrl string
+	issueUrl   string
+	sha        string
 }
 
 func getOpenPRs() []issue {
@@ -113,9 +125,11 @@ func getMergeableIssues() []mergeMe {
 			if l.Name == "merge-me" {
 
 				item := mergeMe{
-					prUrl:    i.Url,
-					cloneUrl: i.Head.Repo.CloneUrl,
-					sha:      i.Head.Sha,
+					prUrl:      i.Url,
+					cloneUrl:   i.Head.Repo.CloneUrl,
+					issueUrl:   i.IssueUrl,
+					commentUrl: i.Links.Comments.Href,
+					sha:        i.Head.Sha,
 				}
 
 				result = append(result, item)
@@ -254,7 +268,7 @@ type addCommentBody struct {
 }
 
 func (m *mergeMe) addComment(comment string) error {
-	url := m.prUrl + "/comments"
+	url := m.commentUrl
 	log.Println("POST:", url)
 
 	b := addCommentBody{body: comment}
@@ -288,12 +302,13 @@ func (m *mergeMe) addComment(comment string) error {
 }
 
 func (m *mergeMe) removeLabel() error {
-	url := m.prUrl + "/labels/merge-me"
+	url := m.issueUrl + "/labels/merge-me"
 	log.Println("DELETE:", url)
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
 	req.Header.Add("Authorization", "Bearer "+githubToken)
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	if err != nil {
 		log.Println("Failed to create request")
 		return err
@@ -318,7 +333,8 @@ type closePRBody struct {
 }
 
 func (m *mergeMe) closePR() error {
-	log.Println("PATCH:", m.prUrl)
+	url := m.issueUrl
+	log.Println("PATCH:", url)
 
 	b := closePRBody{state: "closed"}
 	data, err := json.Marshal(b)
@@ -328,7 +344,8 @@ func (m *mergeMe) closePR() error {
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
-	req, err := http.NewRequestWithContext(ctx, "GET", m.prUrl, bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, "GET", url, bytes.NewReader(data))
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	if err != nil {
 		log.Println("Failed to create request")
 		return err
