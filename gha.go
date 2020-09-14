@@ -53,20 +53,11 @@ type head struct {
 	Sha  string `json:"sha"`
 }
 
-type comments struct {
-	Href string `json:"href"`
-}
-
-type links struct {
-	Comments comments `json:"comments"`
-}
-
 type issue struct {
 	Url      string  `json:"url"`
 	IssueUrl string  `json:"issue_url"`
 	Labels   []label `json:"labels"`
 	Head     head    `json:"head"`
-	Links    links   `json:"_links"`
 }
 
 type issueList struct {
@@ -128,7 +119,7 @@ func getMergeableIssues() []mergeMe {
 					prUrl:      i.Url,
 					cloneUrl:   i.Head.Repo.CloneUrl,
 					issueUrl:   i.IssueUrl,
-					commentUrl: i.Links.Comments.Href,
+					commentUrl: i.IssueUrl + "/comments",
 					sha:        i.Head.Sha,
 				}
 
