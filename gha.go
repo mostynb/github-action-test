@@ -81,9 +81,11 @@ func getOpenPRs() []issue {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("Failed to make request")
 		panic(err)
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Println("Request failed:", resp.StatusCode)
 		panic(fmt.Sprintf("Request failed: %d", resp.StatusCode))
 	}
 
@@ -258,12 +260,14 @@ func (m *mergeMe) addComment(comment string) error {
 	b := addCommentBody{body: comment}
 	data, err := json.Marshal(b)
 	if err != nil {
+		log.Println("Failed to marshal comment data")
 		return err
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "POST", url, bytes.NewReader(data))
 	if err != nil {
+		log.Println("Failed to create request")
 		return err
 	}
 	req.Header.Add("Authorization", "Bearer "+githubToken)
@@ -272,9 +276,11 @@ func (m *mergeMe) addComment(comment string) error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("Failed to make request")
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Println("Request failed:", resp.StatusCode)
 		return fmt.Errorf("Request failed: %d", resp.StatusCode)
 	}
 
@@ -289,15 +295,18 @@ func (m *mergeMe) removeLabel() error {
 	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
 	req.Header.Add("Authorization", "Bearer "+githubToken)
 	if err != nil {
+		log.Println("Failed to create request")
 		return err
 	}
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("Failed to make request")
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Println("Request failed:", resp.StatusCode)
 		return fmt.Errorf("Request failed: %d", resp.StatusCode)
 	}
 
@@ -314,12 +323,14 @@ func (m *mergeMe) closePR() error {
 	b := closePRBody{state: "closed"}
 	data, err := json.Marshal(b)
 	if err != nil {
+		log.Println("Failed to marshal issue state data")
 		return err
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "GET", m.prUrl, bytes.NewReader(data))
 	if err != nil {
+		log.Println("Failed to create request")
 		return err
 	}
 	req.Header.Add("Authorization", "Bearer "+githubToken)
@@ -327,9 +338,11 @@ func (m *mergeMe) closePR() error {
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
+		log.Println("Failed to make request")
 		return err
 	}
 	if resp.StatusCode < 200 || resp.StatusCode >= 300 {
+		log.Println("Request failed:", resp.StatusCode)
 		return fmt.Errorf("Request failed: %d", resp.StatusCode)
 	}
 
