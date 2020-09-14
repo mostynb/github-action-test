@@ -26,7 +26,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	for _, i := range getMergeableIssues() {
+	mergeableIssues := getMergeableIssues()
+	if len(mergeableIssues) == 0 {
+		log.Println("No mergeable issues.")
+		os.Exit(0)
+	}
+
+	for _, i := range mergeableIssues {
 		err := merge(i)
 		if err != nil {
 			panic(err)
