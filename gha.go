@@ -255,14 +255,14 @@ func merge(m mergeMe) error {
 }
 
 type addCommentBody struct {
-	body string `json:"body"`
+	Body string `json:"body"`
 }
 
 func (m *mergeMe) addComment(comment string) error {
 	url := m.commentUrl
 	log.Println("POST:", url)
 
-	b := addCommentBody{body: comment}
+	b := addCommentBody{Body: comment}
 	data, err := json.Marshal(b)
 	if err != nil {
 		log.Println("Failed to marshal comment data")
@@ -320,14 +320,14 @@ func (m *mergeMe) removeLabel() error {
 }
 
 type closePRBody struct {
-	state string `json:"state"`
+	State string `json:"state"`
 }
 
 func (m *mergeMe) closePR() error {
 	url := m.issueUrl
 	log.Println("PATCH:", url)
 
-	b := closePRBody{state: "closed"}
+	b := closePRBody{State: "closed"}
 	data, err := json.Marshal(b)
 	if err != nil {
 		log.Println("Failed to marshal issue state data")
