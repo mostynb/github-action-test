@@ -343,7 +343,7 @@ func (m *mergeMe) closePR() error {
 	}
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
-	req, err := http.NewRequestWithContext(ctx, "GET", url, bytes.NewReader(data))
+	req, err := http.NewRequestWithContext(ctx, "PATCH", url, bytes.NewReader(data))
 	if err != nil {
 		log.Println("Failed to create request")
 		return err
