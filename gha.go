@@ -81,6 +81,7 @@ func getOpenPRs() []issue {
 	}
 	req.Header.Add("Authorization", "Bearer "+githubToken)
 	req.Header.Set("Content-Type", "application/json")
+
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
@@ -298,12 +299,12 @@ func (m *mergeMe) removeLabel() error {
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "DELETE", url, nil)
-	req.Header.Add("Authorization", "Bearer "+githubToken)
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	if err != nil {
 		log.Println("Failed to create request")
 		return err
 	}
+	req.Header.Add("Authorization", "Bearer "+githubToken)
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
@@ -324,7 +325,7 @@ type closePRBody struct {
 }
 
 func (m *mergeMe) closePR() error {
-	url := m.issueUrl
+	url := m.prUrl
 	log.Println("PATCH:", url)
 
 	b := closePRBody{State: "closed"}
@@ -336,11 +337,11 @@ func (m *mergeMe) closePR() error {
 
 	ctx, _ := context.WithTimeout(context.Background(), requestTimeout)
 	req, err := http.NewRequestWithContext(ctx, "GET", url, bytes.NewReader(data))
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	if err != nil {
 		log.Println("Failed to create request")
 		return err
 	}
+	req.Header.Set("Accept", "application/vnd.github.v3+json")
 	req.Header.Add("Authorization", "Bearer "+githubToken)
 
 	client := &http.Client{}
