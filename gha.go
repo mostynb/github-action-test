@@ -246,8 +246,15 @@ func merge(m mergeMe) error {
 		return err
 	}
 
+	err, stdout, _ = runCmd("git", "rev-parse", "HEAD")
+	if err != nil {
+		log.Println("Failed to find final ref")
+		return err
+	}
+	final_sha := strings.TrimSpace(stdout.String())
+
 	m.removeLabel()
-	m.addComment("Merged into master.")
+	m.addComment("Change added to master: https://github.com/mostynb/github-action-test/commit/" + final_sha)
 	m.closePR()
 
 	log.Println()
