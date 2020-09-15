@@ -253,8 +253,8 @@ func merge(m mergeMe) error {
 	}
 	final_sha := strings.TrimSpace(stdout.String())
 
-	m.removeLabel()
 	m.addComment("Change added to master: https://github.com/mostynb/github-action-test/commit/" + final_sha)
+	m.removeLabel()
 	m.closePR()
 
 	log.Println()
