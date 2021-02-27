@@ -33,6 +33,7 @@ jobs:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: bazelisk-linux-amd64
           asset_name: bazelisk-linux-amd64
+          asset_content_type: application/octet-stream
 
 #  mac:
 #    name: create mac binary
