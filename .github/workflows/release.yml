@@ -19,11 +19,18 @@ jobs:
           chmod +x bazelisk-linux-amd64
           #./bazelisk-linux-amd64 build //:bazel-remote
           ls -lR
-      - name: upload linux binary
+      - name: Get release URL
+        id: get_release
+        uses: bruceadams/get-release@v1.2.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload Release Asset
+        id: upload-release-asset 
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: bazelisk-linux-amd64
           asset_name: bazelisk-linux-amd64
 
