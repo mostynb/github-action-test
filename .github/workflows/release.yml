@@ -26,6 +26,9 @@ jobs:
         uses: bruceadams/get-release@v1.2.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get release version
+        id: release_version
+        run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | sed -e "s|^refs/tags/v||")
       - name: Upload Release Asset
         id: upload-release-asset 
         uses: actions/upload-release-asset@v1
@@ -34,7 +37,7 @@ jobs:
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: bazelisk-linux-amd64
-          asset_name: bazelisk-linux-amd64
+          asset_name: bazelisk-linux-${{ steps.release_version.outputs.VERSION }}-amd64
           asset_content_type: application/octet-stream
 
 #  mac:
