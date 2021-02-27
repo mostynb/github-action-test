@@ -12,6 +12,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Build
         run: |
           set -eu
           wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64
@@ -33,6 +34,7 @@ jobs:
 #    steps:
 #      - name: Checkout code
 #        uses: actions/checkout@v2
+#      - name: Build
 #        run: |
 #          set -eu
 #          wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-darwin-amd64
