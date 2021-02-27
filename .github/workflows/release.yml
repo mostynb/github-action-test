@@ -20,6 +20,7 @@ jobs:
           chmod +x bazelisk-linux-amd64
           #./bazelisk-linux-amd64 build //:bazel-remote
           ls -lR
+          git log -1
       - name: Get release URL
         id: get_release
         uses: bruceadams/get-release@v1.2.2
