@@ -1,0 +1,33 @@
+name: create release binaries
+
+on:
+  release:
+    types:
+      - published
+
+jobs:
+  linux:
+    name: create linux binary
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      run: |
+        set -eu
+        wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-linux-amd64
+        chmod +x bazelisk-linux-amd64
+        ./bazelisk-linux-amd64 build //:bazel-remote
+        ls -lR
+
+  mac:
+    name: create mac binary
+    runs-on: macos-10.15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      run: |
+        set -eu
+        wget https://github.com/bazelbuild/bazelisk/releases/download/v1.7.5/bazelisk-darwin-amd64
+        chmod +x bazelisk-darwin-amd64
+        ./bazelisk-darwin-amd64 build //:bazel-remote
+        ls -lR
